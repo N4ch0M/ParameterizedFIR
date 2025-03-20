@@ -1,0 +1,9 @@
+0.7
+2020.2
+Oct 19 2021
+03:16:22
+D:/Documentos/Xilinx/FILTROS/FIR/FIR.sim/sim_1/behav/xsim/glbl.v,1634335545,verilog,,,,glbl,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/FIR/FIR.srcs/sim_1/imports/new/fir_param_tb.v,1742509477,verilog,,,,fir_param_tb,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/FIR/FIR.srcs/sim_1/imports/new/fir_tb.v,1742495331,verilog,,,,fir_tb,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/FIR/FIR.srcs/sources_1/new/fir.v,1742494802,verilog,,D:/Documentos/Xilinx/FILTROS/FIR/FIR.srcs/sim_1/imports/new/fir_tb.v,,fir,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/FIR/FIR.srcs/sources_1/new/fir_param.v,1742510257,verilog,,D:/Documentos/Xilinx/FILTROS/FIR/FIR.srcs/sim_1/imports/new/fir_param_tb.v,,fir_param,,,,,,,,

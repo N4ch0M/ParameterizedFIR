@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parámetros
+f_clk = 1e6         # Frecuencia de reloj en Hz (1 MHz para este ejemplo)
+f_c = f_clk / 8     # Frecuencia de corte (f_clk / 8)
+N = 4               # Número de coeficientes (taps)
+
+# Generar el vector de muestras
+n = np.arange(N)
+
+# Calcular los coeficientes del filtro FIR usando la fórmula de sinc
+h = np.sinc(2 * f_c * (n - (N-1)/2) / f_clk)
+
+# Aplicar la ventana de Hamming
+w = 0.54 - 0.46 * np.cos(2 * np.pi * n / (N-1))
+h = h * w
+
+# Normalizar los coeficientes
+h = h / np.sum(h)
+
+# Calcular los coeficientes escalados por 2^15 (factor de escala para 16 bits)
+scale_factor = 2**15
+h_scaled = np.round(h * scale_factor).astype(int)
+
+# Mostrar los coeficientes y los coeficientes escalados
+print("Coeficientes del filtro FIR (pasabajo):")
+print(h)
+
+print("\nCoeficientes escalados (por 2^15):")
+print(h_scaled)
+
+# Mostrar los coeficientes en formato hexadecimal para Verilog
+print("\nCoeficientes en formato hexadecimal para Verilog:")
+for coeff in h_scaled:
+    print(f"16'h{coeff:04X};")  # Formato hexadecimal de 4 dígitos
+
+# Graficar los coeficientes
+plt.stem(n, h_scaled, basefmt=" ")
+plt.title("Coeficientes del filtro FIR pasabajo escalados")
+plt.xlabel("n (índice de coeficiente)")
+plt.ylabel("Valor de h[n] escalado")
+plt.grid(True)
+plt.show()
