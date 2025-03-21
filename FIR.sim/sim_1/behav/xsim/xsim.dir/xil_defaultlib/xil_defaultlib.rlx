@@ -3,5 +3,7 @@
 Oct 19 2021
 03:16:22
 D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.sim/sim_1/behav/xsim/glbl.v,1634335545,verilog,,,,glbl,,,,,,,,
-D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sim_1/new/fir_param_tb.v,1742586471,verilog,,,,fir_param_tb,,,,,,,,
-D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sources_1/new/fir_param.v,1742589779,verilog,,D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sim_1/new/fir_param_tb.v,,fir_param,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sim_1/new/fir_param_tb.v,1742588638,verilog,,,,fir_param_tb,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sim_1/new/firx2_param_tb.v,1742597419,verilog,,,,firx2_param_tb,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sources_1/new/fir_param.v,1742589779,verilog,,D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sim_1/new/firx2_param_tb.v,,fir_param,,,,,,,,
+D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sources_1/new/firx2_param.v,1742597608,verilog,,D:/Documentos/Xilinx/FILTROS/ParameterizedFIR/FIR.srcs/sim_1/new/firx2_param_tb.v,,firx2_param,,,,,,,,

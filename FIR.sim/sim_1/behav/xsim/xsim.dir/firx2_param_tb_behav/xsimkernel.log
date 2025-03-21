@@ -1,0 +1,4 @@
+Running: xsim.dir/firx2_param_tb_behav/xsimk.exe -simmode gui -wdb firx2_param_tb_behav.wdb -simrunnum 0 -socket 51652
+Design successfully loaded
+Design Loading Memory Usage: 8788 KB (Peak: 8788 KB)
+Design Loading CPU Usage: 15 ms

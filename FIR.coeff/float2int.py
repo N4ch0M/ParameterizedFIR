@@ -1,40 +1,33 @@
-#%% Bloque 1 Genera el filtro
-# ===============================
+#%% Bloque 1 Convierte los coeficientes a enteros y los guarda en un archivo
+# ===========================================================================
 
 # Importa librerías
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parámetros
-f_clk = 50e6        # Frecuencia de reloj en Hz 
-f_c = f_clk / 25    # Frecuencia de corte 
-N = 14              # Número de coeficientes (taps)
+f_clk = 50e6        # Frecuencia de reloj en Hz
+N = 81              # Número de coeficientes (taps)
+n = np.arange(N)    # Índices de los coeficientes
+NBits = 16          # Número de bits para la representación
 
-# ===============================
-# Generación del filtro FIR
-# ===============================
-# Genera el vector de muestras (n)
-n = np.arange(N)
+# ================================
+# Lee el archivo con coeficientes 
+# ================================
+with open('Matlab_coeff.txt', 'r') as file:
+    h = [float(line.strip()) for line in file.readlines()]
 
-# Calcula los coeficientes del filtro FIR usando la fórmula de sinc
-h = np.sinc(2 * f_c * (n - (N-1)/2) / f_clk)
-
-# Genera la ventana de Hamming para reducir el rizado
-w = 0.54 - 0.46 * np.cos(2 * np.pi * n / (N-1))
-
-# Aplica la ventana al filtro sinc
-h = h * w
-
-# Normaliza los coeficientes para evitar distorsiones en la amplitud asegurando que la suma de los coeficientes sea 1
-h = h / np.sum(h)
+# Convertimos h a un array de NumPy para operaciones eficientes
+h = np.array(h)
 
 # ========================
 # Escalado para hardware
 # ========================
-# Escalado por 2^15 (para 16 bits)
-scale_factor = 2**15
+# Escalado por 2^(NBits-1) (para NBits bits)
+scale_factor = 2**(NBits-1)
 # Redondeo y conversión a enteros
 h_scaled = np.round(h * scale_factor).astype(int)
+
+print(h_scaled)
 
 # ========================
 # Muestra los resultados
@@ -98,6 +91,42 @@ plt.xticks(n)  # Asegurar que los índices del coeficiente sean claramente visib
 plt.tight_layout()  # Ajustar el diseño para evitar recortes
 plt.show()
 
+# ==============================================
+# Respuesta en frecuencia filtro cuantizado
+# ==============================================
+# Calcula la respuesta en frecuencia usando la FFT
+H_freq = np.fft.fft(h_scaled, 4096)  # 1024 puntos para mayor resolución
+f = np.fft.fftfreq(4096, 1/f_clk)  # Frecuencias asociadas a los puntos FFT
+
+# Magnitud y fase de la respuesta en frecuencia
+H_mag = np.abs(H_freq)  # Magnitud
+H_phase = np.angle(H_freq)  # Fase
+H_mag_dB = 20 * np.log10(H_mag + 1e-20) 
+
+# Grafica la magnitud de la respuesta en frecuencia en dB
+plt.figure(figsize=(10, 6))
+
+# Magnitud en dB
+plt.subplot(2, 1, 1)
+plt.plot(f[:2048], H_mag_dB[:2048])  # Solo se grafican las frecuencias positivas
+plt.title("Respuesta en Frecuencia - Magnitud en dB")
+plt.xlabel("Frecuencia (Hz)")
+plt.ylabel("Magnitud (dB)")
+plt.grid(True)
+
+# Fase de la respuesta en frecuencia
+plt.subplot(2, 1, 2)
+plt.plot(f[:512], np.degrees(H_phase[:512]))  # Convertir fase a grados
+plt.title("Respuesta en Frecuencia - Fase")
+plt.xlabel("Frecuencia (Hz)")
+plt.ylabel("Fase (grados)")
+plt.grid(True)
+
+# Gráficas
+plt.tight_layout()
+plt.show()
+
+
 # %% Bloque 2 Guardar en un archivo
 file_name = f"..\\FIR.srcs\\coeff_1\\M{len(h_scaled)}_coefficients.dat"
 
@@ -109,7 +138,7 @@ with open(file_name, "w") as file:
     for coeff in h_scaled:
         # Convertir a complemento a dos (para 16 bits)
         if coeff < 0:
-            coeff = (1 << 16) + coeff  
+            coeff = (1 << NBits) + coeff  
         # Escribir en hexadecimal con salto de línea
         file.write(f"{coeff:04X}\n")  
 
@@ -131,7 +160,7 @@ t = np.linspace(0, 0.01, int(0.01 * f_clk), endpoint=False)
 
 # Señal mixta con dos frecuencias
 f1 = 2e5  
-f2 = 8e6  
+f2 = 10e6  
 signal = 0.5 * np.sin(2 * np.pi * f1 * t) + 0.35 * np.sin(2 * np.pi * f2 * t)  
 
 # Filtrar la señal usando el filtro FIR
@@ -198,8 +227,8 @@ plt.show()
 # Acoto la señal
 signal_limited = signal[:muestras]
 
-# Escalado por 2^15 (para 16 bits)
-scale_factor = 2**15
+# Escalado por 2^(NBits-1) (para NBits bits)
+scale_factor = 2**(NBits-1)
 # Redondeo y conversión a enteros
 sig_scaled = np.round(signal_limited * scale_factor).astype(int)
 
@@ -209,7 +238,7 @@ with open(sig_name, "w") as file:
     for data in sig_scaled:
         # Convertir a complemento a dos (para 16 bits)
         if data < 0:
-            data = (1 << 16) + data  
+            data = (1 << NBits) + data  
         # Escribir en hexadecimal con salto de línea
         file.write(f"{data:04X}\n")  
 
