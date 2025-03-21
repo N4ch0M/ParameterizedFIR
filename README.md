@@ -1,4 +1,4 @@
-# Parametrized FIR Filter using Python and Verilog
+# Parameterized FIR Filter using Python and Verilog
 
 This project implements a **FIR (Finite Impulse Response) low-pass filter** using a parametrized design in both **Python** and **Verilog**. The filter is designed to provide an efficient solution for digital signal processing applications. The code is designed to be easily adjustable for different cutoff frequencies, filter sizes, and resolutions.
 
