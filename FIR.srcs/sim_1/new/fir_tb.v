@@ -55,14 +55,19 @@ module fir_tb;
         rst         = 1'b0;
         
         // Introduce a sequence of unit pulses (pulse in data_in every 100 ns)
-        #CLK_PERIOD data_in = {NBits-1{1'b0}, 1'b1}; // Impulse 1
-        #CLK_PERIOD data_in = {NBits{1'b0}};         // 0
-        #CLK_PERIOD data_in = {NBits{1'b0}};         // 0
-        #CLK_PERIOD data_in = {NBits{1'b0}};         // 0
-        #CLK_PERIOD data_in = {NBits-1{1'b0}, 1'b1}; // Impulse 2
-        #CLK_PERIOD data_in = {NBits{1'b0}};         // 0
-        #CLK_PERIOD data_in = {NBits{1'b0}};         // 0
-        #CLK_PERIOD data_in = {NBits{1'b0}};         // 0
+        #CLK_PERIOD data_in = {{NBits-1{1'b0}}, 1'b1};  // Impulse
+        #CLK_PERIOD data_in = {NBits{1'b0}};            // 0
+        #CLK_PERIOD data_in = {NBits{1'b0}};            // 0
+        #CLK_PERIOD data_in = {NBits{1'b0}};            // 0
+        
+        #(10*CLK_PERIOD);
+
+        #CLK_PERIOD data_in = {{NBits-1{1'b0}}, 1'b1};  // Impulse
+        #CLK_PERIOD data_in = {NBits{1'b0}};            // 0
+        #CLK_PERIOD data_in = {NBits{1'b0}};            // 0
+        #CLK_PERIOD data_in = {NBits{1'b0}};            // 0
+
+        #(10*CLK_PERIOD);
         
         #(10*CLK_PERIOD);
         $finish;

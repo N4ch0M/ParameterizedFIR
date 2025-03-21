@@ -6,7 +6,7 @@
 module fir_param
  #(
     parameter NBits  = 16,      //! Number of Bits
-    parameter NCoeff = 4        //! Number of Coefficients
+    parameter NCoeff = 8        //! Number of Coefficients
   ) 
   (
     data_out, 
@@ -38,7 +38,7 @@ module fir_param
 
     // Coefficients init from file
     initial begin
-        $readmemh("M4_coefficients.dat",coeff,0,NCoeff-1);  
+        $readmemh("M8_coefficients.dat",coeff,0,NCoeff-1);  
     end
 
     //! Shift Register and accumulation model

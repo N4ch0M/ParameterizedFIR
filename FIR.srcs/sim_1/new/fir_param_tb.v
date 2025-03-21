@@ -11,7 +11,7 @@ module fir_param_tb;
     //******************* Parameter Declarations **********************//
     // --------------------------------------------------------------- //    
     parameter   NBits           = 16;
-    parameter   NCoeff          = 4;
+    parameter   NCoeff          = 8;
     parameter   CLK_PERIOD      = 20;  
 
     // --------------------------------------------------------------- //

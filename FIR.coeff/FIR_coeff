@@ -1,33 +1,48 @@
+#%% Bloque 1 Genera el filtro
+# ===============================
+
+# Importa librerías
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Parámetros
 f_clk = 1e6         # Frecuencia de reloj en Hz (1 MHz para este ejemplo)
 f_c = f_clk / 8     # Frecuencia de corte (f_clk / 8)
-N = 4               # Número de coeficientes (taps)
+N = 7               # Número de coeficientes (taps)
 
-# Generar el vector de muestras
+# ===============================
+# Generación del filtro FIR
+# ===============================
+# Genera el vector de muestras (n)
 n = np.arange(N)
 
-# Calcular los coeficientes del filtro FIR usando la fórmula de sinc
+# Calcula los coeficientes del filtro FIR usando la fórmula de sinc
 h = np.sinc(2 * f_c * (n - (N-1)/2) / f_clk)
 
-# Aplicar la ventana de Hamming
+# Genera la ventana de Hamming para reducir el rizado
 w = 0.54 - 0.46 * np.cos(2 * np.pi * n / (N-1))
+
+# Aplica la ventana al filtro sinc
 h = h * w
 
-# Normalizar los coeficientes
+# Normaliza los coeficientes para evitar distorsiones en la amplitud asegurando que la suma de los coeficientes sea 1
 h = h / np.sum(h)
 
-# Calcular los coeficientes escalados por 2^15 (factor de escala para 16 bits)
+# ========================
+# Escalado para hardware
+# ========================
+# Escalado por 2^15 (para 16 bits)
 scale_factor = 2**15
+# Redondeo y conversión a enteros
 h_scaled = np.round(h * scale_factor).astype(int)
 
-# Mostrar los coeficientes y los coeficientes escalados
+# ========================
+# Muestra los resultados
+# ========================
 print("Coeficientes del filtro FIR (pasabajo):")
 print(h)
 
-print("\nCoeficientes escalados (por 2^15):")
+print("\nCoeficientes escalados (multiplicados por 2^15):")
 print(h_scaled)
 
 # Mostrar los coeficientes en formato hexadecimal para Verilog
@@ -35,10 +50,66 @@ print("\nCoeficientes en formato hexadecimal para Verilog:")
 for coeff in h_scaled:
     print(f"16'h{coeff:04X};")  # Formato hexadecimal de 4 dígitos
 
-# Graficar los coeficientes
-plt.stem(n, h_scaled, basefmt=" ")
-plt.title("Coeficientes del filtro FIR pasabajo escalados")
-plt.xlabel("n (índice de coeficiente)")
-plt.ylabel("Valor de h[n] escalado")
+# ========================
+# Respuesta en frecuencia
+# ========================
+# Calcula la respuesta en frecuencia usando la FFT
+H_freq = np.fft.fft(h, 1024)  # 1024 puntos para mayor resolución
+f = np.fft.fftfreq(1024, 1/f_clk)  # Frecuencias asociadas a los puntos FFT
+
+# Magnitud y fase de la respuesta en frecuencia
+H_mag = np.abs(H_freq)  # Magnitud
+H_phase = np.angle(H_freq)  # Fase
+H_mag_dB = 20 * np.log10(H_mag + 1e-20) 
+
+# Grafica la magnitud de la respuesta en frecuencia en dB
+plt.figure(figsize=(10, 6))
+
+# Magnitud en dB
+plt.subplot(2, 1, 1)
+plt.plot(f[:512], H_mag_dB[:512])  # Solo se grafican las frecuencias positivas
+plt.title("Respuesta en Frecuencia - Magnitud en dB")
+plt.xlabel("Frecuencia (Hz)")
+plt.ylabel("Magnitud (dB)")
 plt.grid(True)
+
+# Fase de la respuesta en frecuencia
+plt.subplot(2, 1, 2)
+plt.plot(f[:512], np.degrees(H_phase[:512]))  # Convertir fase a grados
+plt.title("Respuesta en Frecuencia - Fase")
+plt.xlabel("Frecuencia (Hz)")
+plt.ylabel("Fase (grados)")
+plt.grid(True)
+
+# Gráficas
+plt.tight_layout()
 plt.show()
+
+# ========================
+# Graficar los coeficientes
+# ========================
+plt.figure(figsize=(8, 5))
+plt.stem(n, h_scaled, basefmt=" ")
+plt.title("Coeficientes del Filtro FIR Pasabajo Escalados", fontsize=14)
+plt.xlabel("n (Índice de Coeficiente)", fontsize=12)
+plt.ylabel("Valor de h[n] Escalado", fontsize=12)
+plt.grid(True)
+plt.xticks(n)  # Asegurar que los índices del coeficiente sean claramente visibles
+plt.tight_layout()  # Ajustar el diseño para evitar recortes
+plt.show()
+
+# %% Bloque 2 Guardar en un archivo
+file_name = f"..\\FIR.srcs\\coeff_1\\M{len(h_scaled)}_coefficients.dat"
+
+# Escribir los coeficientes en el archivo
+with open(file_name, "w") as file:
+    for coeff in h_scaled:
+        file.write(f"{coeff:04X}\n")  # Escribir en hexadecimal con salto de línea
+
+# Mensaje de confirmación mejorado
+print(f"✅ Coeficientes guardados en '{file_name}'")
+print(f"📂 Ubicación: {file_name}")
+print(f"🔢 Total de coeficientes: {len(h_scaled)}")
+
+
+# %%

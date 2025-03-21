@@ -1,10 +1,14 @@
 Time resolution is 1 ps
 Time = 0 | data_in = 0000 | data_out = xxxx | rst = 0
-Time = 80000 | data_in = 0000 | data_out = 0000 | rst = 0
+Time = 160000 | data_in = 0000 | data_out = 0000 | rst = 0
 Time = 200000 | data_in = 0000 | data_out = 0000 | rst = 1
 Time = 400000 | data_in = 0000 | data_out = 0000 | rst = 0
 Time = 820000 | data_in = 0001 | data_out = 0000 | rst = 0
-Time = 840000 | data_in = 0000 | data_out = 04f0 | rst = 0
-Time = 860000 | data_in = 0000 | data_out = 3b10 | rst = 0
-Time = 900000 | data_in = 0000 | data_out = 04f0 | rst = 0
-Time = 920000 | data_in = 0000 | data_out = 0000 | rst = 0
+Time = 840000 | data_in = 0000 | data_out = 0075 | rst = 0
+Time = 860000 | data_in = 0000 | data_out = 04e0 | rst = 0
+Time = 880000 | data_in = 0000 | data_out = 149d | rst = 0
+Time = 900000 | data_in = 0000 | data_out = 260f | rst = 0
+Time = 940000 | data_in = 0000 | data_out = 149d | rst = 0
+Time = 960000 | data_in = 0000 | data_out = 04e0 | rst = 0
+Time = 980000 | data_in = 0000 | data_out = 0075 | rst = 0
+Time = 1000000 | data_in = 0000 | data_out = 0000 | rst = 0

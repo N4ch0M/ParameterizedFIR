@@ -1,7 +1,7 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
 "../../../../FIR.srcs/sources_1/new/fir_param.v" \
-"../../../../FIR.srcs/sim_1/imports/new/fir_param_tb.v" \
+"../../../../FIR.srcs/sim_1/new/fir_param_tb.v" \
 
 # compile glbl module
 verilog xil_defaultlib "glbl.v"
