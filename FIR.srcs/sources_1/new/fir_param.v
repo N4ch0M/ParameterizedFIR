@@ -1,12 +1,12 @@
 //! @title Parameterized FIR filter
-//! @author J. I. NCoefforales (morales.juan.ignacio@gmail.com)
-//! @version 1.0
-//! @date Simple FIR filter with parameterized number of coefficients (unsigned data)
+//! @author J. I. Morales (morales.juan.ignacio@gmail.com)
+//! @version 1.1
+//! @date Simple FIR filter with parameterized number of coefficients, signed data version
 
 module fir_param
  #(
     parameter NBits  = 16,      //! Number of Bits
-    parameter NCoeff = 8        //! Number of Coefficients
+    parameter NCoeff = 14       //! Number of Coefficients
   ) 
   (
     data_out, 
@@ -15,8 +15,8 @@ module fir_param
     clk       
   );
 
-    output  [NBits-1:0]   data_out;         //! Output data
-    input   [NBits-1:0]   data_in;          //! Input data
+    output  [NBits-1:0]   data_out;         //! Output data (signed)
+    input   [NBits-1:0]   data_in;          //! Input data (signed)
     input                     rst;          //! Reset
     input                     clk;          //! Clock
 
@@ -24,10 +24,10 @@ module fir_param
     // --------------------------------------------------------------- //
     //******************** Register Declarations **********************//
     // --------------------------------------------------------------- //
-    reg     [NBits-1:0]     register [NCoeff-1:0];  //! Matrix for Registers
-    reg     [NBits-1:0]     coeff    [NCoeff-1:0];  //! Matrix for Coefficients
-    reg     [NBits*2-1:0]   prod     [NCoeff-1:0];  //! Partial Products
-    reg     [NBits*2-1:0]   sum;                    //! Output sum
+    reg     signed [NBits-1:0]     register [NCoeff-1:0];  //! Matrix for signed Registers
+    reg     signed [NBits-1:0]     coeff    [NCoeff-1:0];  //! Matrix for signed Coefficients
+    reg     signed [NBits*2-1:0]   prod     [NCoeff-1:0];  //! Partial Products (to handle overflow)
+    reg     signed [NBits*2+3:0]   sum;                    //! Accumulated Sum (to handle overflow)
 
     // --------------------------------------------------------------- //
     integer i;
@@ -38,7 +38,7 @@ module fir_param
 
     // Coefficients init from file
     initial begin
-        $readmemh("M8_coefficients.dat",coeff,0,NCoeff-1);  
+        $readmemh("M14_coefficients.dat",coeff,0,NCoeff-1);  
     end
 
     //! Shift Register and accumulation model
@@ -62,7 +62,7 @@ module fir_param
             register[0] <= data_in; 
             
             // Perform the accumulation of products (blocking assignment)
-            sum = {NBits*2{1'b0}}; 
+            sum = {NBits*2+4{1'b0}}; 
             for (i = 0; i < NCoeff; i = i + 1) 
                 begin
                 sum = sum + (coeff[i] * register[i]);  
@@ -70,7 +70,7 @@ module fir_param
             end
         end
 
-    //! Output Adder
-    assign  data_out = sum; 
+    //! Output Adder Truncation (previous scaling amplitude)
+    assign data_out = sum*(2**5) >>> (NBits + 4);  
 
     endmodule
